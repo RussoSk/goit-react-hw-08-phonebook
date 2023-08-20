@@ -17,6 +17,15 @@ color: white;`;
 export const ListButton = styled(Button)`
   background-color: white;
   color: #1976d2;
+
+  &:hover {
+    color: white;
+  }
+
+  &:focus {
+    outline: none;
+    color: white;
+  }
 `;
 
 export const Title = styled(Typography)`
