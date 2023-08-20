@@ -1,16 +1,54 @@
-export const App = () => {
+import { Navigate, Route, Routes } from 'react-router-dom';
+import Layout from './Layout/Layout';
+import Home from '../pages/Home';
+import Login from '../pages/Login';
+import Contacts from '../pages/Contacts';
+import Registration from '../pages/Registration';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchRefresh } from '../redux/operations';
+import RestrictedRoute from './Routes/ResRout';
+import PrivateRoute from './Routes/LoginRoute';
+import { Toaster } from 'react-hot-toast';
+
+const App = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchRefresh());
+  }, [dispatch]);
+
+  
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route
+            path="/registration"
+            element={
+              <RestrictedRoute
+                component={Registration}
+                redirectTo="/contacts"
+              />
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <RestrictedRoute component={Login} redirectTo="/contacts" />
+            }
+          />
+          <Route
+            path="/contacts"
+            element={<PrivateRoute component={Contacts} redirectTo="/login" />}
+          />
+        </Route>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+      <Toaster />
+    </>
   );
 };
+
+export default App;
